@@ -1,6 +1,7 @@
 import re as regex
 from urllib.parse import urlparse
 from collections import Counter
+import tldextract as tld
 
 comboBase: str = open("./sample.txt", "r").read()
 comboLines: list = comboBase.split("\n")
@@ -23,8 +24,10 @@ def isURL(url: str) -> bool:
 
 def parseToHost(url: str):
     if isURL(url):
-        parsedURL = urlparse(url)
-        host = parsedURL.netloc
+        extracted = tld.extract(url)
+        host = extracted.domain
+        if extracted.suffix:
+            host += "." + extracted.suffix
         return host
     else:
         return False
